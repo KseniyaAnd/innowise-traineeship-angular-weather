@@ -1,1 +1,19 @@
-/* You can add global styles to this file, and also import other style files */
+body {
+    font-family: 'IBMPlex', sans-serif;
+    background-color: #eaeaea;
+    display: flex;
+    justify-content: center;
+}
+
+.p-title {
+    color: #555555;
+    font-size: 32px;
+}
+
+/*fonts*/
+@font-face {
+    font-family: 'IBMPlex';
+    src: url('/assets/fonts/IBMPlexSans-ExtraLight.ttf') format('ttf');
+    font-weight: normal;
+    font-style: normal;
+}
