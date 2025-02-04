@@ -5,11 +5,6 @@ body {
     justify-content: center;
 }
 
-.p-title {
-    color: #555555;
-    font-size: 32px;
-}
-
 /*fonts*/
 @font-face {
     font-family: 'IBMPlex';
