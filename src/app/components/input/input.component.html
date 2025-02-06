@@ -1,6 +1,6 @@
 <input
         type="text"
-        (input)="onInput(); updateFilters()"
+        (input)="onInput(); updateFilters(searchText)"
         [(ngModel)]="searchText"
         (focus)="showDropdown()"
         [placeholder]="isDropdownVisible() ? '': 'Search city'"
@@ -9,31 +9,34 @@
 <!--        (blur)="hideDropdown()"-->
 @if (isDropdownVisible() && searchText.length > 0) {
     <div class="dropdown">
-        @if (cities.length != 0) {
-            @for (city of cities; track city.name) {
-                <div class="city">
-                    <div
-                            class="city-name"
-                            (click)="clickCity(city.lat, city.lon); hideDropdown();"
-                            routerLink="/crisis-list"
-                    >{{ city.name }}
-                    </div>
-                    <div class="city-description">
+        @if (loading) {
+            @if (cities().length != 0) {
+                @for (city of cities(); track city.name) {
+                    <div class="city">
+                        <div
+                                class="city-name"
+                                (click)="clickCity(city.lat, city.lon, city.name); hideDropdown();"
+                        >{{ city.name }}
+                        </div>
+                        <div class="city-description">
                         <span>@if (city.state) {
                             {{ city.state }}
                         } @else {
                             Not defined
                         } </span> >
-                        <span>@if (city.country) {
-                            {{ city.country }}
-                        } @else {
-                            Not defined
-                        }</span>
+                            <span>@if (city.country) {
+                                {{ city.country }}
+                            } @else {
+                                Not defined
+                            }</span>
+                        </div>
                     </div>
-                </div>
+                }
+            } @else {
+                <div class="city-not-found">Cities not found</div>
             }
         } @else {
-            <div class="city-not-found">Cities not found</div>
+            <div class="city-not-found">Loading</div>
         }
     </div>
 }

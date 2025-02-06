@@ -1,4 +1,8 @@
 <p class="p-title">
-    {{ title }}
+    @if (selectedCity?.city?.name){{{selectedCity?.city?.name}}}
+    @else {
+        {{ title }}
+    }
 </p>
 <app-input></app-input>
+<app-table></app-table>

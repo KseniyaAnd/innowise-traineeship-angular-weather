@@ -1,0 +1,34 @@
+<table>
+    <tr>
+        <th>Time</th>
+        <th>Temperature</th>
+        <th>Fells Like</th>
+        <th>Weather</th>
+        <th>Precipitation</th>
+        <th>Cloudiness</th>
+    </tr>
+    @for (listPoint of selectedCity?.list; track selectedCity?.list) {
+        <tr>
+            <td>
+                {{(listPoint.dt_txt).slice(10,16)}}
+            </td>
+            <td>
+                {{(listPoint.main.temp - 273).toFixed(1)}}°С
+            </td>
+            <td>
+                {{(listPoint.main.feels_like - 273).toFixed(1)}}°С
+            </td>
+            <td>
+                <img src="https://openweathermap.org/img/wn/{{listPoint.weather[0].icon}}@2x.png">
+            </td>
+            <td>
+                {{listPoint.pop}}%
+            </td>
+            <td>
+                {{listPoint.clouds.all}}%
+            </td>
+        </tr>
+    }
+
+</table>
+
