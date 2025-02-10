@@ -4,5 +4,9 @@
         {{ title }}
     }
 </p>
-<app-input></app-input>
+<app-input
+        (onInputEvent)="getCities($event)"
+        (onClickEvent)="getCity($event)"
+        [items]="cities()"
+></app-input>
 <app-table></app-table>

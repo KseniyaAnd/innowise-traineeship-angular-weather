@@ -1,4 +1,13 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit, signal} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    EventEmitter,
+    inject, Input,
+    OnInit,
+    Output,
+    signal
+} from '@angular/core';
 import {WeatherApiService} from "../../services/weather-api.service";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {City} from "../../interfaces/city";
@@ -20,14 +29,19 @@ import {CityForecast} from "../../interfaces/city-forecast";
 export class InputComponent implements OnInit {
     private weatherApi = inject(WeatherApiService)
 
+    @Output() onInputEvent = new EventEmitter<string>();
+    @Output() onClickEvent = new EventEmitter<City>();
+    @Input() items: City[] = []
+
     loading = this.weatherApi.loading;
 
+    // smart dumb components
+    //
+
     protected searchText: string = '';
-    protected lat: number = Number(localStorage.getItem("lat"));
-    protected lon: number = Number(localStorage.getItem("lon"));
-    protected cities = signal<City[]>([]);
-    protected cityDayForecast: CityForecast | undefined;
-    protected isDropdownVisible = signal(false)
+    // protected lat: number = Number(localStorage.getItem("lat"));
+    // protected lon: number = Number(localStorage.getItem("lon"));
+    protected isDropdownVisible = signal(false);
 
     constructor(
         private route: ActivatedRoute,
@@ -39,48 +53,34 @@ export class InputComponent implements OnInit {
     ngOnInit() {
         this.route.queryParams.subscribe((params) => {
             this.searchText = params['search'] || '';
-            console.log(params['search'])
         });
 
-        console.log(this.searchText)
-
-        this.weatherApi.getCity(this.lat, this.lon).subscribe(data => {
-            this.weatherApi.selectedCity.next(data);
-            this.cdr.markForCheck();
-            console.log(data)
-        })
+        // console.log(this.searchText)
+        //
+        // this.weatherApi.getCity(this.lat, this.lon).subscribe(data => {
+        //     this.weatherApi.selectedCity.next(data);
+        //     this.cdr.markForCheck();
+        //     console.log(data)
+        // })
 
     }
 
-    protected updateFilters(search: string, tab: string = "") {
-        this.router.navigate([], {
-            queryParams: {
-                search: search ? search : null,
-                tab: tab ? tab : null,
-            },
-            queryParamsHandling: 'merge',
-        });
-    }
+    // protected updateFilters(search: string, tab: string = "") {
+    //     this.router.navigate([], {
+    //         queryParams: {
+    //             search: search ? search : null,
+    //             tab: tab ? tab : null,
+    //         },
+    //         queryParamsHandling: 'merge',
+    //     });
+    // }
 
     protected onInput(): void {
-        if (this.searchText) {
-            this.weatherApi.getCites(this.searchText).subscribe(data => {
-                this.cities.set(data);
-            });
-        }
+        this.onInputEvent.emit(this.searchText)
     }
 
-    protected clickCity(lat: number, lon: number, cityName: string): void {
-        this.weatherApi.getCity(lat, lon).subscribe(data => {
-            this.cityDayForecast = data;
-            this.weatherApi.selectedCity.next(data);
-            this.searchText = cityName;
-            this.cdr.markForCheck();
-            this.updateFilters(this.searchText, "one-day-forecast")
-            localStorage.setItem("lat", String(lat));
-            localStorage.setItem("lon", String(lon));
-            console.log((this.searchText))
-        });
+    protected clickItem(item: City): void {
+        this.onClickEvent.emit(item);
     }
 
     protected showDropdown(): void {
