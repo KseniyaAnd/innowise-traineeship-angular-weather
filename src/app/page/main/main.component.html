@@ -1,0 +1,15 @@
+<p class="p-title">
+    @if (selectedCity()?.city?.name) {
+        {{ selectedCity()?.city?.name }}
+    } @else {
+        Weather
+    }
+</p>
+<app-search
+        [items]="cities()"
+        [loading]="loading()"
+        [itemName]="(selectedCity()?.city?.name)!"
+        (onInputEvent)="getCities($event)"
+        (onClickEvent)="getCity($event)"
+></app-search>
+<app-table></app-table>
