@@ -1,41 +1,37 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject} from '@angular/core';
-import {OneDayTabComponent} from "../one-day-tab/one-day-tab.component";
-import {WeatherApiService} from "../../services/weather-api.service";
-import {AsyncPipe} from "@angular/common";
+import {ChangeDetectionStrategy, Component, inject, OnInit, signal} from '@angular/core';
+import {TabComponent} from "../tab/tab.component";
+import {Router} from "@angular/router";
 
 @Component({
     selector: 'app-table',
     imports: [
-        OneDayTabComponent,
-        AsyncPipe,
-
+        TabComponent,
     ],
     templateUrl: './table.component.html',
     styleUrl: './table.component.css',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TableComponent {
-    private weatherApi = inject(WeatherApiService)
+export class TableComponent implements OnInit{
+    private router = inject(Router);
 
-    protected firstTab = this.weatherApi.firstTab;
-    protected secondTab = this.weatherApi.secondTab;
+    protected curTab = signal('one-day-tab');
 
-    constructor(
-        private cdr: ChangeDetectorRef
-    ) {
+    ngOnInit(): void {
+        this.updateParamTab(this.curTab())
     }
 
-    toggleFirstTab() {
-        this.firstTab.next(false);
-        this.secondTab.next(true);
-        this.cdr.markForCheck();
+    setTab(tabName: string) {
+        this.curTab.set(tabName);
+        this.updateParamTab(tabName)
     }
 
-    toggleSecondTab() {
-        this.firstTab.next(true);
-        this.secondTab.next(false);
-        this.cdr.markForCheck();
+    protected updateParamTab(tab: string = "") {
+        this.router.navigate([], {
+            queryParams: {
+                tab: tab ? tab : null,
+            },
+            queryParamsHandling: 'merge',
+        });
     }
-
 
 }

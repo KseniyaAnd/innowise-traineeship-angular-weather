@@ -1,12 +1,1 @@
-<p class="p-title">
-    @if (selectedCity?.city?.name){{{selectedCity?.city?.name}}}
-    @else {
-        {{ title }}
-    }
-</p>
-<app-input
-        (onInputEvent)="getCities($event)"
-        (onClickEvent)="getCity($event)"
-        [items]="cities()"
-></app-input>
-<app-table></app-table>
+<router-outlet></router-outlet>

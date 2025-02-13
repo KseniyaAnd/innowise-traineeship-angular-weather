@@ -1,14 +1,17 @@
 <div class="tabs">
-    <div class="tab" [class.checked]="firstTab | async" (click)="toggleSecondTab()">One-day forecast</div>
+    <div class="tab"
+         [class.checked]="curTab() === 'one-day-tab'"
+         (click)="setTab('one-day-tab')">One-day forecast
+    </div>
     <div class="line">|</div>
-    <div class="tab" [class.checked]="secondTab | async" (click)="toggleFirstTab()">Five-day forecast</div>
+    <div class="tab"
+         [class.checked]="curTab() === 'five-day-tab'"
+         (click)="setTab('five-day-tab')">Five-day forecast
+    </div>
 </div>
 <div class="table">
-    @if (firstTab | async) {
-        <app-one-day-tab>
-        </app-one-day-tab>
-    }
-
+    <app-tab [curTab]="curTab()">
+    </app-tab>
 </div>
 
 

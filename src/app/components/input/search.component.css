@@ -1,3 +1,9 @@
+.search {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
 input {
     border: 0;
     border-radius: 20px;
@@ -26,25 +32,25 @@ input:focus {
     margin-top: -15px;
 }
 
-.city {
+.item {
     margin-top: 15px;
 }
 
-.city-name {
+.item-name {
     color: #555555;
     cursor: pointer;
 }
 
-.city-name:hover {
+.item-name:hover {
     text-decoration: underline;
 }
 
-.city-description {
+.item-description {
     color: #8f8f8f;
     font-size: 10px;
 }
 
-.city-not-found {
+.item-not-found {
     margin-top: 15px;
     color: #555555;
 }

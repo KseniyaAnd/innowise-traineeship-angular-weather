@@ -1,0 +1,46 @@
+<table>
+    <tr>
+        @if (curTab === "one-day-tab") {
+            <th>Day</th>
+        }
+        @if (curTab === "five-day-tab") {
+            <th>Time</th>
+        }
+        <th>Temperature</th>
+        <th>Feels Like</th>
+        <th>Weather</th>
+        <th>Precipitation</th>
+        <th>Cloudiness</th>
+    </tr>
+    @for (listPoint of selectedCity()?.list; track listPoint.dt) {
+        @if (
+            (curTab === "one-day-tab" && $index < 8) ||
+            (curTab === "five-day-tab" && (listPoint.dt_txt).slice(11, 16) == "12:00")
+        ) {
+<!--            todo перенести таблицу в компонент таблицы-->
+            <tr>
+                <td>
+                    {{ curTab == "one-day-tab" ? (listPoint.dt_txt).slice(10, 16) : (listPoint.dt_txt).slice(5, 10) }}
+                </td>
+                <td>
+<!--                    тут использовтаь pipe для маппинга-->
+                    {{ (listPoint.main.temp - 273).toFixed(1) }}°С
+                </td>
+                <td>
+<!--                    промапить это в сервисе-->
+                    {{ (listPoint.main.feels_like - 273).toFixed(1) }}°С
+                </td>
+                <td>
+<!--                    // используй Angular img-->
+                    <img [src]="'https://openweathermap.org/img/wn/' + listPoint.weather[0].icon + '@2x.png'" alt="Weather icon">
+                </td>
+                <td>
+                    {{ listPoint.pop }}%
+                </td>
+                <td>
+                    {{ listPoint.clouds.all }}%
+                </td>
+            </tr>
+        }
+    }
+</table>
