@@ -5,28 +5,29 @@
             (focus)="showDropdown()"
             [placeholder]="isDropdownVisible() ? '' : 'Search city'"
     />
-</div>
 
-@if (isDropdownVisible()) {
-    <div class="dropdown">
-        @if (loading) {
-            <div class="item-not-found">Loading...</div>
-        } @else {
-            @if (items.length > 0) {
-                @for (item of items; track item.name) {
-                    <div class="item">
-                        <div class="item-name" (click)="clickItem(item); hideDropdown();">
-                            {{ item.name }}
-                        </div>
-                        <div class="item-description">
-                            <span>{{ item.state || 'Not defined' }}</span> >
-                            <span>{{ item.country || 'Not defined' }}</span>
-                        </div>
-                    </div>
-                }
+    @if (isDropdownVisible()) {
+        <div class="dropdown">
+            @if (loading) {
+                <div class="item-not-found">Loading...</div>
             } @else {
-                <div class="item-not-found">Cities not found</div>
+                @if (items.length > 0) {
+                    @for (item of items; track item.name) {
+                        <div class="item">
+                            <div class="item-name" (click)="clickItem(item); hideDropdown();">
+                                {{ item.name }}
+                            </div>
+                            <div class="item-description">
+                                <span>{{ item.state || 'Not defined' }}</span> >
+                                <span>{{ item.country || 'Not defined' }}</span>
+                            </div>
+                        </div>
+                    }
+                } @else {
+                    <div class="item-not-found">Cities not found</div>
+                }
             }
-        }
-    </div>
-}
+        </div>
+    }
+
+</div>

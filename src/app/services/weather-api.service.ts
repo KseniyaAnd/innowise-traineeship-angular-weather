@@ -3,7 +3,7 @@ import {City} from "../interfaces/city";
 import {HttpClient} from "@angular/common/http";
 import {Observable, tap} from "rxjs";
 import {CityForecast} from "../interfaces/city-forecast";
-import {environment} from "../../environments/environment";
+import {environment} from "../../environments/environment.development";
 
 @Injectable({
     providedIn: 'root'

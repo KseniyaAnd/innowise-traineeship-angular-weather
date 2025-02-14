@@ -1,17 +1,61 @@
 <div class="tabs">
     <div class="tab"
-         [class.checked]="curTab() === 'one-day-tab'"
-         (click)="setTab('one-day-tab')">One-day forecast
+         [class.checked]="curTab() === Tabs.OneDay"
+         (click)="setTab(Tabs.OneDay)">One-day forecast
     </div>
     <div class="line">|</div>
     <div class="tab"
          [class.checked]="curTab() === 'five-day-tab'"
-         (click)="setTab('five-day-tab')">Five-day forecast
+         (click)="setTab(Tabs.FiveDay)">Five-day forecast
     </div>
 </div>
 <div class="table">
-    <app-tab [curTab]="curTab()">
-    </app-tab>
+    <table>
+        <tr>
+            @if (curTab() === Tabs.OneDay) {
+                <th>Day</th>
+            }
+            @if (curTab() === Tabs.FiveDay) {
+                <th>Time</th>
+            }
+            <th>Temperature</th>
+            <th>Feels Like</th>
+            <th>Weather</th>
+            <th>Precipitation</th>
+            <th>Cloudiness</th>
+        </tr>
+        @for (listPoint of selectedCity()?.list; track listPoint.dt) {
+            @if (
+                (curTab() === Tabs.OneDay && $index < 8) ||
+                (curTab() === Tabs.FiveDay && (listPoint.dt_txt | toHours) === "12:00")
+                    ) {
+                <tr>
+                    <td>
+                        {{ curTab() == Tabs.OneDay ? (listPoint.dt_txt | toHours) : (listPoint.dt_txt | toDayMonth)}}
+                    </td>
+                    <td>
+                        {{ listPoint.main.temp | kelvinToCelcius}}°С
+                    </td>
+                    <td>
+                        {{ listPoint.main.feels_like | kelvinToCelcius}}°С
+                    </td>
+                    <td>
+                        <img
+                                ngSrc="https://openweathermap.org/img/wn/{{listPoint.weather[0].icon}}@2x.png"
+                                alt="Weather icon"
+                                width="110" height="110">
+                    </td>
+                    <td>
+                        {{ listPoint.pop }}%
+                    </td>
+                    <td>
+                        {{ listPoint.clouds.all }}%
+                    </td>
+                </tr>
+            }
+        }
+    </table>
+
 </div>
 
 

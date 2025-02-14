@@ -37,3 +37,20 @@
     align-items: center;
     font-size: 18px;
 }
+
+table {
+    padding: 15px;
+    width: 100%;
+}
+
+tr {
+    display: flex;
+}
+
+th, td {
+    flex: 1;
+    font-weight: normal;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
