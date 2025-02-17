@@ -11,8 +11,8 @@
             @if (loading) {
                 <div class="item-not-found">Loading...</div>
             } @else {
-                @if (items.length) {
-                    @for (item of items; track item.name) {
+                @if (items().length) {
+                    @for (item of items(); track item.name) {
                         <div class="item">
                             <div class="item-name" (click)="clickItem(item); hideDropdown();">
                                 {{ item.name }}

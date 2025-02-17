@@ -1,12 +1,14 @@
-import {Component, EventEmitter, inject, OnInit, Output, signal} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, inject, OnInit, Output, signal} from '@angular/core';
 import {Router} from "@angular/router";
 import {Tabs} from "../../const/tabs";
 
 @Component({
   selector: 'app-tabs',
+  standalone: true,
   imports: [],
   templateUrl: './tabs.component.html',
-  styleUrl: './tabs.component.css'
+  styleUrl: './tabs.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TabsComponent implements OnInit {
   private router = inject(Router);
@@ -15,7 +17,6 @@ export class TabsComponent implements OnInit {
   protected readonly Tabs = Tabs;
 
   @Output() onClickEvent = new EventEmitter<Tabs>();
-
 
   ngOnInit(): void {
     this.updateParamTab(this.curTab())

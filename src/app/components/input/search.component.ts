@@ -1,7 +1,7 @@
 import {
     ChangeDetectionStrategy,
-    Component,
-    EventEmitter,
+    Component, DestroyRef,
+    EventEmitter, inject, input,
     Input,
     OnDestroy,
     OnInit,
@@ -13,6 +13,7 @@ import {City} from "../../interfaces/city";
 import {debounceTime, Subject, takeUntil} from "rxjs";
 import {SearchOption} from "../../interfaces/search-option";
 import {NgTemplateOutlet} from "@angular/common";
+import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 
 @Component({
     selector: 'app-search',
@@ -26,10 +27,12 @@ import {NgTemplateOutlet} from "@angular/common";
     styleUrl: './search.component.css',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SearchComponent implements OnInit, OnDestroy {
+export class SearchComponent implements OnInit {
+    destroyRef = inject(DestroyRef);
+
     @Output() onInputEvent = new EventEmitter<string>();
     @Output() onClickEvent = new EventEmitter<SearchOption>();
-    @Input() items: SearchOption[] = []
+    items = input.required<SearchOption[]>();
     @Input() loading = false;
     @Input() itemName = "";
 
@@ -37,18 +40,11 @@ export class SearchComponent implements OnInit, OnDestroy {
 
     protected isDropdownVisible = signal(false);
 
-    private destroy = new Subject<void>();// DestroyRef
-
-    ngOnDestroy(): void {
-        this.destroy.next();
-        this.destroy.complete();
-    }
-
     ngOnInit() {
         this.searchControl.valueChanges
             .pipe(
                 debounceTime(500),
-                takeUntil(this.destroy)
+                takeUntilDestroyed(this.destroyRef)
             )
             .subscribe(value => {
                 this.onInputEvent.emit(value);
