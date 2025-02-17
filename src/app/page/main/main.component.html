@@ -1,6 +1,6 @@
 <p class="p-title">
-    @if (selectedCity()?.city?.name) {
-        {{ selectedCity()?.city?.name }}
+    @if (selectedCity()?.cityName) {
+        {{ selectedCity()?.cityName }}
     } @else {
         Weather
     }
@@ -8,8 +8,9 @@
 <app-search
         [items]="cities()"
         [loading]="loading()"
-        [itemName]="(selectedCity()?.city?.name)!"
+        [itemName]="(selectedCity()?.cityName)!"
         (onInputEvent)="getCities($event)"
         (onClickEvent)="getCity($event)"
 ></app-search>
-<app-table></app-table>
+<app-tabs (onClickEvent)="setTab($event)"></app-tabs>
+<app-table [curTab]="tab()"></app-table>

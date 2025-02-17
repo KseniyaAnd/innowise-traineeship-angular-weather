@@ -1,0 +1,11 @@
+<div class="tabs">
+    <div class="tab"
+         [class.checked]="curTab() === Tabs.OneDay"
+         (click)="setTab(Tabs.OneDay)">One-day forecast
+    </div>
+    <div class="line">|</div>
+    <div class="tab"
+         [class.checked]="curTab() === Tabs.FiveDay"
+         (click)="setTab(Tabs.FiveDay)">Five-day forecast
+    </div>
+</div>

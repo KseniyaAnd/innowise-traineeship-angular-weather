@@ -11,6 +11,8 @@ import {
 import {FormControl, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {City} from "../../interfaces/city";
 import {debounceTime, Subject, takeUntil} from "rxjs";
+import {SearchOption} from "../../interfaces/search-option";
+import {NgTemplateOutlet} from "@angular/common";
 
 @Component({
     selector: 'app-search',
@@ -18,6 +20,7 @@ import {debounceTime, Subject, takeUntil} from "rxjs";
     imports: [
         FormsModule,
         ReactiveFormsModule,
+        NgTemplateOutlet,
     ],
     templateUrl: './search.component.html',
     styleUrl: './search.component.css',
@@ -25,16 +28,16 @@ import {debounceTime, Subject, takeUntil} from "rxjs";
 })
 export class SearchComponent implements OnInit, OnDestroy {
     @Output() onInputEvent = new EventEmitter<string>();
-    @Output() onClickEvent = new EventEmitter<City>();
-    @Input() items: City[] = []
+    @Output() onClickEvent = new EventEmitter<SearchOption>();
+    @Input() items: SearchOption[] = []
     @Input() loading = false;
     @Input() itemName = "";
 
-    searchControl = new FormControl<string>(this.itemName, {nonNullable: true});
+    protected searchControl = new FormControl<string>(this.itemName, {nonNullable: true});
 
     protected isDropdownVisible = signal(false);
 
-    private destroy = new Subject<void>();
+    private destroy = new Subject<void>();// DestroyRef
 
     ngOnDestroy(): void {
         this.destroy.next();
@@ -52,13 +55,14 @@ export class SearchComponent implements OnInit, OnDestroy {
             });
     }
 
+    // Заменить на effect or computed
     ngOnChanges(changes: SimpleChanges): void {
         if (changes['itemName']) {
             this.searchControl.setValue(changes['itemName'].currentValue, {emitEvent: false});
         }
     }
 
-    protected clickItem(item: City): void {
+    protected clickItem(item: SearchOption): void {
         this.onClickEvent.emit(item);
     }
 

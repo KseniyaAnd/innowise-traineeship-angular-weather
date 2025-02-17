@@ -15,3 +15,4 @@ export interface CityForecast {
     cod: string,
     list: Forecast[]
 }
+

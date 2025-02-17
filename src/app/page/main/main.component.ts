@@ -1,28 +1,36 @@
-import {ChangeDetectionStrategy, Component, inject, signal} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject, OnInit, signal} from '@angular/core';
 import {SearchComponent} from "../../components/input/search.component";
 import {TableComponent} from "../../components/table/table.component";
 import {City} from "../../interfaces/city";
-import {CityForecast} from "../../interfaces/city-forecast";
 import {WeatherApiService} from "../../services/weather-api.service";
-import { Router } from '@angular/router';
+import {Router} from '@angular/router';
+import {LocalStorageService} from "../../services/local-storage.service";
+import {TabsComponent} from "../../components/tabs/tabs.component";
+import {Tabs} from "../../const/tabs";
+import {SearchOption} from "../../interfaces/search-option";
+import {map, Observable, tap} from "rxjs";
+import {CityForecastRefact} from "../../interfaces/city-forecast-refact";
 
 @Component({
-  selector: 'app-main',
+    selector: 'app-main',
     standalone: true,
     imports: [
         SearchComponent,
-        TableComponent
+        TableComponent,
+        TabsComponent
     ],
-  templateUrl: './main.component.html',
-  styleUrl: './main.component.css',
+    templateUrl: './main.component.html',
+    styleUrl: './main.component.css',
     changeDetection: ChangeDetectionStrategy.OnPush
 
 })
-export default class MainComponent {
+export default class MainComponent implements OnInit {
     private weatherApi = inject(WeatherApiService);
+    private localStorageService = inject(LocalStorageService)
     private router = inject(Router);
 
-    protected cities = signal<City[]>([]);
+    protected cities = signal<SearchOption[]>([]);
+    protected tab = signal<Tabs>(Tabs.OneDay)
     protected selectedCity = this.weatherApi.selectedCity;
     protected loading = this.weatherApi.loading;
 
@@ -31,30 +39,36 @@ export default class MainComponent {
     }
 
     private loadInitialCity() {
-        const cityString = localStorage.getItem('curCity');
-        if (cityString) {
-            const cityForecast: CityForecast = JSON.parse(cityString);
-            this.weatherApi.selectedCity.set(cityForecast);
-            this.updateParamSearch(cityForecast.city.name);
-        } else {
-            this.weatherApi.selectedCity.set(null);
-        }
+        const cityForecast = this.localStorageService.getData('curCity');
+        console.log(cityForecast)
+        this.weatherApi.selectedCity.set(cityForecast);
+        this.updateParamSearch(cityForecast.cityName);
     }
 
-    protected getCities(searchText: string) {
-        this.weatherApi.getCities(searchText).subscribe(data => {
-            this.cities.set([...data]);
-        });
-        this.updateParamSearch(searchText)
-
+    protected getCities(searchText: string): Observable<SearchOption[]> {
+        return this.weatherApi.getCities(searchText).pipe(
+            map(data => {
+                const cities = data.map(el => ({
+                    id: `${el.lon} ${el.lat}`,
+                    name: el.name
+                }));
+                this.cities.set(cities);
+                return cities;
+            }),
+            tap(() => {
+                this.updateParamSearch(searchText);
+            })
+        );
     }
 
-    protected getCity(city: City) {
-        this.weatherApi.getCity(city.lat, city.lon).subscribe(data => {
-            localStorage.setItem(`curCity`, JSON.stringify(data));
+    protected getCity(city: SearchOption) {
+        const [lon, lat] = city.id.split(' ').map(Number);
+
+        this.weatherApi.getCity(lat, lon).subscribe(data => {
+            this.localStorageService.saveData(`curCity`, data.toString());
 
             this.weatherApi.selectedCity.set(data);
-            this.updateParamSearch(data.city.name)
+            this.updateParamSearch(data.cityName);
         });
     }
 
@@ -67,4 +81,7 @@ export default class MainComponent {
         });
     }
 
+    setTab(tab: Tabs) {
+        this.tab.set(tab);
+    }
 }

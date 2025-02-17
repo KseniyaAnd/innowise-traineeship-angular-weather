@@ -1,21 +1,10 @@
-<div class="tabs">
-    <div class="tab"
-         [class.checked]="curTab() === Tabs.OneDay"
-         (click)="setTab(Tabs.OneDay)">One-day forecast
-    </div>
-    <div class="line">|</div>
-    <div class="tab"
-         [class.checked]="curTab() === 'five-day-tab'"
-         (click)="setTab(Tabs.FiveDay)">Five-day forecast
-    </div>
-</div>
 <div class="table">
     <table>
         <tr>
-            @if (curTab() === Tabs.OneDay) {
+            @if (curTab === Tabs.OneDay) {
                 <th>Day</th>
             }
-            @if (curTab() === Tabs.FiveDay) {
+            @if (curTab === Tabs.FiveDay) {
                 <th>Time</th>
             }
             <th>Temperature</th>
@@ -24,32 +13,32 @@
             <th>Precipitation</th>
             <th>Cloudiness</th>
         </tr>
-        @for (listPoint of selectedCity()?.list; track listPoint.dt) {
+        @for (item of selectedCity()?.weather; track item.dayTime) {
             @if (
-                (curTab() === Tabs.OneDay && $index < 8) ||
-                (curTab() === Tabs.FiveDay && (listPoint.dt_txt | toHours) === "12:00")
+                (curTab === Tabs.OneDay && $index < 8) ||
+                (curTab === Tabs.FiveDay && item.dayTime === "12:00")
                     ) {
                 <tr>
                     <td>
-                        {{ curTab() == Tabs.OneDay ? (listPoint.dt_txt | toHours) : (listPoint.dt_txt | toDayMonth)}}
+                        {{ curTab == Tabs.OneDay ? item.dayTime : item.day}}
                     </td>
                     <td>
-                        {{ listPoint.main.temp | kelvinToCelcius}}°С
+                        {{ item.temp | kelvinToCelcius}}°С
                     </td>
                     <td>
-                        {{ listPoint.main.feels_like | kelvinToCelcius}}°С
+                        {{ item.feelsLike | kelvinToCelcius}}°С
                     </td>
                     <td>
                         <img
-                                ngSrc="https://openweathermap.org/img/wn/{{listPoint.weather[0].icon}}@2x.png"
+                                ngSrc="https://openweathermap.org/img/wn/{{item.icon}}@2x.png"
                                 alt="Weather icon"
                                 width="110" height="110">
                     </td>
                     <td>
-                        {{ listPoint.pop }}%
+                        {{ item.pop }}%
                     </td>
                     <td>
-                        {{ listPoint.clouds.all }}%
+                        {{ item.clouds }}%
                     </td>
                 </tr>
             }
